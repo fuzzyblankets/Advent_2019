@@ -15,34 +15,37 @@ def instruction_split(instruct):
     opcode = opcode_and_modes[-2:]
     parameters = instruct[1:]
     modes = list(reversed(list(opcode_and_modes[:len(parameters)])))
-    param_and_mode = zip(parameters, modes)
-    return opcode, param_and_mode
+    parameters = parameter_discovery(zip(parameters, modes))
+    return opcode, parameters
 
 
-def op_01(inputs):
+def parameter_discovery(inputs):
     parameters=[]
     for i in inputs:
-        if i[1] == '0': #positional
+        if i[1] == '0':  # positional
             parameters.append(int_code[i[0]])
-        elif i[1] == '1': #absolute
+        elif i[1] == '1':  # absolute
             parameters.append(i[0])
         else:
             raise ValueError("Incorrect parameter mode: {}".format(i[1]))
-
-    result = parameters[0] + parameters[1]
-    int_code[parameter[2]] = result
+    return parameters
 
 
-def op_02(pos1, pos2, pos3):
-    result = int_code[pos1] * int_code[pos2]
-    int_code[pos3] = result
+def op_01(param1, param2, param3):
+    result = param1 + param2
+    int_code[param3] = result
 
-def op_03(pos1):
+
+def op_02(param1, param2, param3):
+    result = int_code[param1] * int_code[param2]
+    int_code[param3] = result
+
+def op_03(param1):
     value = int(input("Enter input value for opcode 3: "))
-    int_code[pos1] = value
+    int_code[param1] = value
 
-def op_04(pos1):
-    return int_code[pos1]
+def op_04(param1):
+    return int_code[param1]
 
 
 def main():
@@ -56,17 +59,21 @@ def main():
         opcode, parameters = instruction_split(int_code[instruction_pointer:instruction_pointer+parameter_count+1])
 
         if opcode == '01':
-            op_01(parameters)
+            op_01(parameters[0],parameters[1],parameters[2])
         elif opcode == '02':
             op_two(int_code[i + 1], int_code[i + 2], int_code[i + 3])
         elif opcode == '03':
+           #TODO enter ode for opcode 3
            pass
         elif opcode == '04':
+            # TODO enter ode for opcode 4
             pass
         elif opcode == '99':
             break
         else:
             break
+
+        instruction_pointer += parameter_count+1
 
 if __name__ == '__main__':
     main()
