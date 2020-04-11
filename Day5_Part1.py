@@ -16,15 +16,24 @@ def instruction_split(instruct):
     parameters = instruct[1:]
     modes = list(reversed(list(opcode_and_modes[:len(parameters)])))
     param_and_mode = zip(parameters, modes)
-    return op, param_and_mode
+    return opcode, param_and_mode
 
 
-def op_01(pos1, pos2, pos3):
-    result = int_code[pos1] + int_code[pos2]
-    int_code[pos3] = result
+def op_01(inputs):
+    parameters=[]
+    for i in inputs:
+        if i[1] == '0': #positional
+            parameters.append(int_code[i[0]])
+        elif i[1] == '1': #absolute
+            parameters.append(i[0])
+        else:
+            raise ValueError("Incorrect parameter mode: {}".format(i[1]))
+
+    result = parameters[0] + parameters[1]
+    int_code[parameter[2]] = result
 
 
-def op_02(*args):
+def op_02(pos1, pos2, pos3):
     result = int_code[pos1] * int_code[pos2]
     int_code[pos3] = result
 
@@ -35,27 +44,33 @@ def op_03(pos1):
 def op_04(pos1):
     return int_code[pos1]
 
-if __name__="__main__":
+
+def main():
     instruction_pointer = 0
     while instruction_pointer < len(int_code):
         opcode = str(int_code[instruction_pointer]).zfill(2)
         if opcode in parameter_count_dict:
-            parameter_count = parameter_count_dict[parameter_count]
+            parameter_count = parameter_count_dict[opcode]
         else:
             raise ValueError("Opcode parameter count not defined in dictionary.")
-        opcode, parameters = instruction_split(int_code[instruction_pointer:instruction_pointer+parameter_count])
-        if opcode == 01:
-            op_one(int_code[i + 1], int_code[i + 2], int_code[i + 3])
-        elif opcode == 02:
-            op_two(int_code[i + 1], int_code[i + 2], int_code[i + 3])
-        elif opcode == 03:
-           pass
-        elif opcode == 04
+        opcode, parameters = instruction_split(int_code[instruction_pointer:instruction_pointer+parameter_count+1])
 
-        elif int_code[i] == 99:
+        if opcode == '01':
+            op_01(parameters)
+        elif opcode == '02':
+            op_two(int_code[i + 1], int_code[i + 2], int_code[i + 3])
+        elif opcode == '03':
+           pass
+        elif opcode == '04':
+            pass
+        elif opcode == '99':
             break
         else:
             break
+
+if __name__ == '__main__':
+    main()
+
 
 
 
