@@ -1,6 +1,10 @@
+"""
+https://adventofcode.com/2019/day/7
+"""
+
 from aenum import MultiValueEnum
 from enum import Enum
-
+from itertools import permutations
 
 class OPERATION_CODE(Enum):
     ADD = 1
@@ -77,7 +81,27 @@ def parameter_discovery(params):
             raise ValueError("Incorrect parameter mode: {}".format(param[1]))
     return parameters
 
-def processor(input_1, input_2, int_code):
+def amplifiers (starting):
+    amp_inputs_1 = permutations(range(0,5))
+    amp_inputs_2 = permutations(range(5,10))
+    thruster_out_max = 0
+    for combo_1 in amp_inputs_1:
+        amp_input = 0
+        for phase in combo_1:
+            amp_out = ic_processor(phase, amp_input, starting)
+            amp_input = amp_out
+        for combo_2 in amp_inputs_2:
+            for phase in combo_2:
+                amp_out = ic_processor(phase, amp_input, starting)
+                amp_input = amp_out
+
+            if amp_out > thruster_out_max:
+                thruster_out_max = amp_out
+                combo_out = combo
+
+    return thruster_out_max, combo_out
+
+def ic_processor(input_1, input_2, int_code):
     instruction_pointer = 0
     input_count = 1
     while instruction_pointer < len(int_code):
@@ -138,3 +162,22 @@ def processor(input_1, input_2, int_code):
             raise ValueError("Invalid opcode provided.\n Opcode: {}".format(opcode))
 
         instruction_pointer += (instruction.parameter_count+1)
+
+
+if __name__ == '__main__':
+    int_code =[]
+    puzzle_input_path = "//puzzle_input.txt"
+    with open(puzzle_input_path, 'r') as file:
+        puzzle_input = file.read().strip().split(",")
+        starting_int_code = list(map(int, puzzle_input))
+        int_code = list(map(int, puzzle_input))
+
+    thruster_out_max, combo_out = amplifiers(int_code)
+
+    print("Max thruster output: {}".format(thruster_out_max))
+    print("Amplifier Combo: {}".format(combo_out))
+
+
+
+
+

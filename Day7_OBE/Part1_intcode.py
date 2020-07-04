@@ -82,22 +82,17 @@ def parameter_discovery(params):
     return parameters
 
 def amplifiers (starting):
-    amp_inputs_1 = permutations(range(0,5))
-    amp_inputs_2 = permutations(range(5,10))
+    amp_inputs = permutations([0, 1, 2, 3, 4])
     thruster_out_max = 0
-    for combo_1 in amp_inputs_1:
+    for combo in amp_inputs:
         amp_input = 0
-        for phase in combo_1:
+        for phase in combo:
             amp_out = ic_processor(phase, amp_input, starting)
             amp_input = amp_out
-        for combo_2 in amp_inputs_2:
-            for phase in combo_2:
-                amp_out = ic_processor(phase, amp_input, starting)
-                amp_input = amp_out
 
-            if amp_out > thruster_out_max:
-                thruster_out_max = amp_out
-                combo_out = combo
+        if amp_out > thruster_out_max:
+            thruster_out_max = amp_out
+            combo_out = combo
 
     return thruster_out_max, combo_out
 
@@ -166,13 +161,13 @@ def ic_processor(input_1, input_2, int_code):
 
 if __name__ == '__main__':
     int_code =[]
-    puzzle_input_path = "/root/PycharmProjects/Advent_2019/Day7/puzzle_input.txt"
+    puzzle_input_path = "//puzzle_input.txt"
     with open(puzzle_input_path, 'r') as file:
         puzzle_input = file.read().strip().split(",")
         starting_int_code = list(map(int, puzzle_input))
         int_code = list(map(int, puzzle_input))
 
-    thruster_out_max, combo_out = amplifiers(int_code)
+    thruster_out_max, combo_out = amplifiers(start)
 
     print("Max thruster output: {}".format(thruster_out_max))
     print("Amplifier Combo: {}".format(combo_out))
