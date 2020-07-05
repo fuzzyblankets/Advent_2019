@@ -116,7 +116,7 @@ class Computer():
 
 if __name__ == '__main__':
     int_code = []
-    puzzle_input_path = "/root/PycharmProjects/Advent_2019/Day7/puzzle_input.txt"
+    puzzle_input_path = "/root/PycharmProjects/Advent_2019/Day5/puzzle_input.txt"
     with open(puzzle_input_path, 'r') as file:
         puzzle_input = file.read().strip().split(",")
         int_code = list(map(int, puzzle_input))
@@ -126,6 +126,11 @@ if __name__ == '__main__':
     amps2 = permutations([5, 6, 7, 8, 9])
     thruster_out_max1 = []
     thruster_out_max2 = []
+
+    computer = Computer(code=int_code)
+    computer.processor()
+    print("Program Output 1: {}".format(computer.output))
+
 
     for combo in amps1:
         computers = [Computer(code=int_code) for _ in range(5)]
